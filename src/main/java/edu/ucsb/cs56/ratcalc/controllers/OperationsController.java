@@ -133,9 +133,24 @@ public class OperationsController {
         RatCalcForm ratCalcForm= new RatCalcForm();
         ratCalcForm.setOp("/");
         model.addAttribute("ratCalcForm" , ratCalcForm);
-        return "operations/multiply";
+        return "operations/divide";
     }
 
+    @GetMapping("/divide/results")
+    public String getDivideResult(Model model, @Valid RatCalcForm ratCalcForm, BindingResult bindingResult) {
+        logger.info("getDivideResult ratCalcForm=" + ratCalcForm);
+        ratCalcForm.setOp("/");
 
+    if(!bindingResult.hasErrors() && !checkDenominatorErrors(ratCalcForm)){
+        Rational r1 = new Rational(ratCalcForm.getNum1(), ratCalcForm.getDenom1());
+        Rational r2 = new Rational (ratCalcForm.getNum2(), ratCalcForm.getDenom2());
+        Rational result = Rational.quotient(r1, r2);
+        logger.info("r1=" + r1 + " r2=" + r2 + " result=" + result); 
+        ratCalcForm.setNumResult(result.getNumerator());
+        ratCalcForm.setDenomResult(result.getDenominator());
+    }
+        model.addAttribute("ratCalcForm" , ratCalcForm);
+        return "operations/divide";
+    }
 
 }
